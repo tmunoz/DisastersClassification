@@ -12,11 +12,6 @@ count = 0
 
 stamps.append(datetime.strptime("3/28/2016 08:29:37", '%m/%d/%Y %H:%M:%S'))
 
-
-# print(stamp+timedelta(minutes=5))
-# if test > (stamp + timedelta(minutes=20)):
-#     print("yep")
-
 for line in f:
     line=line.strip()
     date = line.split(';')[1]
@@ -30,8 +25,7 @@ for line in f:
         stamps.append(stamps[i]+timedelta(minutes=5))
         i+=1
         count=1
-    
-    # print(dateParsed)
+
 
 if len(stamps) > len(counts):
     counts.append(count)
