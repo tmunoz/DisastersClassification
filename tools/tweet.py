@@ -30,7 +30,9 @@ for line in f:
             callsLimit = twitter.get_application_rate_limit_status(resources="statuses")
             remainingCalls = callsLimit["resources"]["statuses"]["/statuses/lookup"]["remaining"]
             if(remainingCalls == 0 or calls == 170):
+                print("Sleeping 15 mins")
                 time.sleep(60*15)
+                print("Awakening")
                 twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
                 calls=0
 
