@@ -24,12 +24,12 @@ for line in f:
     # dateParsed = datetime.strptime(date, '%m/%d/%Y %H:%M:%S')
     
     # if dateParsed < (stamps[i] + timedelta(minutes=1)):
-    if dateParsed < (stamps[i] + timedelta(seconds=5)):
+    if dateParsed < (stamps[i] + timedelta(seconds=1)):
         count += 1
     else:
         counts.append(count)
         # stamps.append(stamps[i] + timedelta(minutes=1))
-        stamps.append(stamps[i] + timedelta(seconds=5))
+        stamps.append(stamps[i] + timedelta(seconds=1))
         i += 1
         count = 1
 
@@ -50,5 +50,5 @@ plt.xticks(y_axis, x_axis)
 plt.xticks(rotation=90)
 plt.plot(y_axis, counts)
 plt.subplots_adjust(bottom=.2)
-plt.savefig('../plots/' + '_'.join(title))
+plt.savefig('../plots/v2/Nepal/' + '_'.join(title))
 plt.show()
