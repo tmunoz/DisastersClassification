@@ -1,3 +1,5 @@
+# WIP: Add a new tool to search for tweets given a bunch of keywords or hashtags, 
+# at the moment it can obtain at most 1800 tweets, should check for the rate limit on twitter API
 import time
 from twython import Twython
 
