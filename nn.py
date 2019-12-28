@@ -9,31 +9,21 @@ from numpy import loadtxt
 # load array
 
 labels = ["No event", "Earthquake", "Other"]
-data = loadtxt('data.csv', delimiter=',')
-data2 = loadtxt('data2.csv', delimiter=',')
+data = loadtxt('./vectors/data_training.csv', delimiter=',')
+dataLabels = loadtxt('./vectors/data_training_ans.csv', delimiter=',')
 
-# print the array
-data = np.array([data])
-data2 = np.array([data2])
-
-print(data.shape)
-print(data2.shape)
-# data = np.delete(data, slice(779, 802), 1)
-
-data = np.concatenate((data,data2))
-
-train_x = np.array(data) #dataset with the Delta Vectors
+train_x = np.array(data) #dataset with the Delta Vectors || Think that I shouldn't be calling np.array as data is already a np.array
 print(train_x.shape)
-train_y = np.array([0,0]) #labels for the dataset
-
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size = 0.1, stratify = train_y)
+train_y = np.array([1, 1, 0, 0, 0, 0, 0, 0]) #labels for the dataset || same that line 15
+print(train_y.shape)
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size = 0.5, stratify = train_y)
 # number of neurons in each layer
 input_num_units = 36
 hidden_num_units = 500
 output_num_units = 2
 
 # set remaining variables
-epochs = 20
+epochs = 100
 learning_rate = 0.0005
 
 # define model
@@ -69,3 +59,10 @@ for epoch in range(epochs):
 
     if (epoch%2 != 0):
         print(epoch+1, avg_cost)
+
+test_x = loadtxt('./vectors/data_test.csv', delimiter=',')
+predictions = np.argmax(model(torch.from_numpy(test_x).float()).data.numpy(), axis=1)
+
+print(predictions)
+for i in range(len(predictions)):
+    print(test_x[i], predictions[i])

@@ -8,14 +8,13 @@ outputTrainingFile = open("../vectors/data_training.csv", "a")
 outputTrainingAnsFile = open("../vectors/data_training_ans.csv", "a")
 
 datasets = [
-    '2013-pakistan-date',
-    '2014-California-date',
-    '2014-Chile1-date',
-    '2014-Chile2-date',
-    '2015-Nepal-date',
-    '2014_chile0_eq_es', # #
-    'sorted',
-    'sortedChile1'
+    '../earthquakes/2013-pakistan-date.csv',
+    '../earthquakes/2014-California-date.csv',
+    '../earthquakes/2014-Chile-date.csv',
+    '../earthquakes/2014-ChileEn-date.csv',
+    '../earthquakes/2015-Nepal-date.csv',
+    '../captured/sortedChile1.csv',
+    '../captured/sorted',
 ]
 
 for dataset in datasets:
