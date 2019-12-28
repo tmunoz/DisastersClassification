@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 
-f = open("./earthquakes/2013-pakistan-date.csv", "r")
+f = open("./captured/sortedChile1.csv", "r")
 
 dates = []
 stamps = []
@@ -17,14 +17,14 @@ stamps.append(datetime.strptime(firstLine, '%a %b %d %H:%M:%S %z %Y'))
 for line in f:
     line=line.strip()
     date = line.split(';')[1]
-    print(date)
+    # print(date)
     dateParsed = datetime.strptime(date, '%a %b %d %H:%M:%S %z %Y')
     
-    if dateParsed < (stamps[i] + timedelta(minutes=5)):
+    if dateParsed < (stamps[i] + timedelta(minutes=15)):
         count+=1
     else:
         counts.append(count)
-        stamps.append(stamps[i]+timedelta(minutes=5))
+        stamps.append(stamps[i]+timedelta(minutes=15))
         i+=1
         count=1
 
