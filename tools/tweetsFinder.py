@@ -10,17 +10,19 @@ ACCESS_TOKEN = twitter.obtain_access_token()
 
 twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
 
-writer = open("../captured/chileSearch3.csv", 'w+')
-writerDetails = open("../captured/chileSearch3-details.csv", 'w+')
+writer = open("chileSearch.csv", 'w+')
+writerDetails = open("chileSearch-details.csv", 'w+')
+keywords = '#fuerzachile OR #fuerzaarica OR #fuerzaiquique OR #fuerzaantofagasta OR #fuerzanortedechile OR #yoestoyconchile OR #yoestoyconarica OR #yoestoyconiquique OR #terremotoenchile OR #terremotochile OR #terremotoenarica OR #terremotoarica OR #terremotoeniquique OR #terremotoiquique OR #terremotoantofagasta OR chile terremoto OR arica terremoto OR iquique terremoto OR antofagasta terremoto OR #chileterremoto OR #Antofagasta OR #Arica OR #Iquique OR #Tocopilla'
 
-res = twitter.search(q='#terremoto #chile #erremoto #sismo #', result_type='mixed', count=100, lang='es', include_entities='true')
+res = twitter.search(q=keywords, result_type='recent', count=100, lang='es', include_entities='true')
 
 minID = 9999999999999999999999
 tweetsAmount = 4000
 foundTweets = 0
 
-while True:
-# for i in range(18):
+
+# while True:
+for i in range(18):
     foundTweets += len(res["statuses"])
     # print(i, "size:", len(res["statuses"]))
     for tweet in res["statuses"]:
@@ -32,9 +34,8 @@ while True:
         for hashtag in tweet["entities"]["hashtags"]:
             writerDetails.write("%s, "%hashtag["text"].strip().replace('\n', ' '))
         writerDetails.write("\n")
-
-        print(tweet["id"])
-    res = twitter.search(q='#terremoto, Chile, Terremoto, sismo', count=100, max_id=minID, lang='es', include_entities='true')
+        # print(tweet["id"])
+    res = twitter.search(q=keywords, count=100, max_id=minID, lang='es', include_entities='true')
 
     if foundTweets >= tweetsAmount:
         break
