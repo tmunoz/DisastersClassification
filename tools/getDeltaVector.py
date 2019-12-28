@@ -13,6 +13,8 @@ datasets = [
     '2014-Chile2-date',
     '2015-Nepal-date',
     '2014_chile0_eq_es', # #
+    '../captured/sortedChile1.csv',
+    '../captured/sorted',
 ]
 
 for dataset in datasets:
