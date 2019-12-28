@@ -1,68 +1,97 @@
+import sklearn.datasets
 import torch
 import numpy as np
-from torch.autograd import Variable
-from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential
-from torch.optim import Adam
-from sklearn.model_selection import train_test_split
-# load numpy array from csv file
+import torch.nn as nn
+import torch.nn.functional as F
 from numpy import loadtxt
-# load array
+from sklearn.metrics import accuracy_score
 
-labels = ["No event", "Earthquake", "Other"]
+labels = ["No event", "Earthquake"]
 data = loadtxt('./vectors/data_training.csv', delimiter=',')
 dataLabels = loadtxt('./vectors/data_training_ans.csv', delimiter=',')
 
-train_x = np.array(data) #dataset with the Delta Vectors || Think that I shouldn't be calling np.array as data is already a np.array
-print(train_x.shape)
-train_y = np.array([1, 1, 0, 0, 0, 0, 0, 0]) #labels for the dataset || same that line 15
-print(train_y.shape)
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size = 0.5, stratify = train_y)
-# number of neurons in each layer
-input_num_units = 36
-hidden_num_units = 500
-output_num_units = 2
+X, y = data, dataLabels
 
-# set remaining variables
-epochs = 100
-learning_rate = 0.0005
+X = torch.from_numpy(X).type(torch.FloatTensor)
+y = torch.from_numpy(y).type(torch.LongTensor)
 
-# define model
-model = Sequential(Linear(input_num_units, hidden_num_units),
-                   ReLU(),
-                   Linear(hidden_num_units, output_num_units))
-# loss function
-loss_fn = CrossEntropyLoss()
 
-# define optimization algorithm
-optimizer = Adam(model.parameters(), lr=learning_rate)
+#our class must extend nn.Module
+class Net(nn.Module):
+    def __init__(self):
+        super(Net,self).__init__()
+        #Our network consists of 3 layers. 1 input, 1 hidden and 1 output layer
+        #This applies Linear transformation to input data. 
+        self.fc1 = nn.Linear(36,4)
+        
+        #This applies linear transformation to produce output data
+        self.fc2 = nn.Linear(4,2)
+        
+    #This must be implemented
+    def forward(self,x):
+        #Output of the first layer
+        x = self.fc1(x)
+        #Activation function is Relu. Feel free to experiment with this
+        x = torch.tanh(x)
+        #This produces output
+        x = self.fc2(x)
+        return x
+        
+    #This function takes an input and predicts the class, (0 or 1)        
+    def predict(self,x):
+        #Apply softmax to output
+        pred = F.softmax(self.forward(x), dim=0)
+        ans = []
+        for t in pred:
+            if t[0]>t[1]:
+                ans.append(0)
+            else:
+                ans.append(1)
+        return torch.tensor(ans)
+        
 
-train_losses = []
-val_losses = []
-for epoch in range(epochs):
-    avg_cost = 0
-    
-    x, y = Variable(torch.from_numpy(train_x)), Variable(torch.from_numpy(train_y), requires_grad=False)
-    x_val, y_val = Variable(torch.from_numpy(val_x)), Variable(torch.from_numpy(val_y), requires_grad=False)
-    pred = model(x.float())
-    pred_val = model(x_val.float())
+#Initialize the model        
+model = Net()
+#Define loss criterion
+criterion = nn.CrossEntropyLoss()
+#Define the optimizer
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-    # get loss
-    loss = loss_fn(pred, y)
-    loss_val = loss_fn(pred_val, y_val)
-    train_losses.append(loss)
-    val_losses.append(loss_val)
-
-    # perform backpropagation
+#Number of epochs
+epochs = 500
+#List to store losses
+losses = []
+for i in range(epochs):
+    #Precit the output for Given input
+    y_pred = model.forward(X)
+    #Compute Cross entropy loss
+    loss = criterion(y_pred,y)
+    #Add loss to the list
+    losses.append(loss.item())
+    #Clear the previous gradients
+    optimizer.zero_grad()
+    #Compute gradients
     loss.backward()
+    #Adjust weights
     optimizer.step()
-    avg_cost = avg_cost + loss.data
 
-    if (epoch%2 != 0):
-        print(epoch+1, avg_cost)
+print(accuracy_score(model.predict(X),y))
+    
+# predict returns 0 for Normal traffic and 1 for Earthquake traffic
+def predict(x):
+    x = torch.from_numpy(x).type(torch.FloatTensor)
+    ans = model.predict(x)
+    return ans.numpy()
 
-test_x = loadtxt('./vectors/data_test.csv', delimiter=',')
-predictions = np.argmax(model(torch.from_numpy(test_x).float()).data.numpy(), axis=1)
+testData = loadtxt('./vectors/data_test.csv', delimiter=',')
+testLabels = loadtxt('./vectors/data_test_ans.csv', delimiter=',')
+predictions = predict(testData)
 
-print(predictions)
-for i in range(len(predictions)):
-    print(test_x[i], predictions[i])
+successCount = 0
+for i in range(len(testData)):
+    if(testLabels[i] == predictions[i]):
+        successCount+=1
+
+
+print("%d/%d"%(successCount, len(testData)))
+
