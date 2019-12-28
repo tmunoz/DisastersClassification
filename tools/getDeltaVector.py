@@ -4,8 +4,8 @@ import math
 
 deltas_mins = [1, 5, 10, 15]
 deltas_secs = [10, 15, 30, 45]
-outputTrainingFile = open("../vectors/data_training.csv", "w")
-outputTrainingAnsFile = open("../vectors/data_training_ans.csv", "w")
+outputTrainingFile = open("../vectors/data_training.csv", "a")
+outputTrainingAnsFile = open("../vectors/data_training_ans.csv", "a")
 
 datasets = [
     '2013-pakistan-date',
@@ -20,7 +20,7 @@ datasets = [
 
 for dataset in datasets:
     print(dataset)
-    for delta in deltas_mins:
+    for delta in deltas_secs:
         try:
             file = open("../datasets/earthquakes/" + dataset + '.csv', "r")
         except:
@@ -48,11 +48,11 @@ for dataset in datasets:
             else:
                 dateParsed = datetime.strptime(date, '%m/%d/%Y %H:%M:%S')
             
-            if dateParsed < (stamps[i] + timedelta(minutes=delta)):
+            if dateParsed < (stamps[i] + timedelta(seconds=delta)):
                 count += 1
             else:
                 counts.append(count)
-                stamps.append(stamps[i] + timedelta(minutes=delta))
+                stamps.append(stamps[i] + timedelta(seconds=delta))
                 i += 1
                 count = 1
 
@@ -74,7 +74,10 @@ for dataset in datasets:
                         outputTrainingFile.write(str(count) + ', ')
                     else:
                         outputTrainingFile.write(str(count) + '\n')
-                        outputTrainingAnsFile.write(str(1) + '\n')
+                        if dataset == 'sorted' or dataset == 'sortedChile1':
+                            outputTrainingAnsFile.write(str(0) + '\n')
+                        else:
+                            outputTrainingAnsFile.write(str(1) + '\n')
                 index += 1
 
         file.close()
