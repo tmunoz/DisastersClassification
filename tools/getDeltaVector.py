@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta, time
 import os
+import math
 
-deltas = [1, 5, 10, 15]
+deltas_mins = [1, 5, 10, 15]
 deltas_secs = [10, 15, 30, 45]
 outputTrainingFile = open("../vectors/data_training.csv", "w")
 outputTrainingAnsFile = open("../vectors/data_training_ans.csv", "w")
@@ -13,14 +14,17 @@ datasets = [
     '2014-Chile2-date',
     '2015-Nepal-date',
     '2014_chile0_eq_es', # #
-    '../captured/sortedChile1.csv',
-    '../captured/sorted',
+    'sorted',
+    'sortedChile1'
 ]
 
 for dataset in datasets:
     print(dataset)
-    for delta in deltas:
-        file = open("../datasets/earthquakes/" + dataset + '.csv', "r")
+    for delta in deltas_mins:
+        try:
+            file = open("../datasets/earthquakes/" + dataset + '.csv', "r")
+        except:
+            file = open("../captured/" + dataset + '.csv', "r")
 
         stamps = []
         counts = []
@@ -56,13 +60,22 @@ for dataset in datasets:
             counts.append(count)
         print(len(counts))
         # Output to file
-        if len(counts) >= 36:
-            for i, count in enumerate(counts[:36]):
-                if i != len(counts[:36]) - 1:
-                    outputTrainingFile.write(str(count) + ', ')
-                else:
-                    outputTrainingFile.write(str(count) + '\n')
-                    outputTrainingAnsFile.write(str(1) + '\n')
+
+        div = math.floor(len(counts) / 36)
+
+        if div > 0:
+            index = 0
+            while index < div:
+                begin = 36 * index
+                end = 36 * (index + 1)
+
+                for i, count in enumerate(counts[begin:end]):
+                    if i != len(counts[begin:end]) - 1:
+                        outputTrainingFile.write(str(count) + ', ')
+                    else:
+                        outputTrainingFile.write(str(count) + '\n')
+                        outputTrainingAnsFile.write(str(1) + '\n')
+                index += 1
 
         file.close()
 
