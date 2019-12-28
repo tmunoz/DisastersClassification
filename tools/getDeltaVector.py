@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, time
 import os
+import math
 
 deltas = [1, 5, 10, 15]
 deltas_secs = [10, 15, 30, 45]
@@ -17,7 +18,7 @@ datasets = [
 
 for dataset in datasets:
     print(dataset)
-    for delta in deltas:
+    for delta in deltas_secs:
         file = open("../datasets/earthquakes/" + dataset + '.csv', "r")
 
         stamps = []
@@ -42,11 +43,11 @@ for dataset in datasets:
             else:
                 dateParsed = datetime.strptime(date, '%m/%d/%Y %H:%M:%S')
             
-            if dateParsed < (stamps[i] + timedelta(minutes=delta)):
+            if dateParsed < (stamps[i] + timedelta(seconds=delta)):
                 count += 1
             else:
                 counts.append(count)
-                stamps.append(stamps[i] + timedelta(minutes=delta))
+                stamps.append(stamps[i] + timedelta(seconds=delta))
                 i += 1
                 count = 1
 
@@ -54,13 +55,22 @@ for dataset in datasets:
             counts.append(count)
         print(len(counts))
         # Output to file
-        if len(counts) >= 36:
-            for i, count in enumerate(counts[:36]):
-                if i != len(counts[:36]) - 1:
-                    outputTrainingFile.write(str(count) + ', ')
-                else:
-                    outputTrainingFile.write(str(count) + '\n')
-                    outputTrainingAnsFile.write(str(1) + '\n')
+
+        div = math.floor(len(counts) / 36)
+
+        if div > 0:
+            index = 0
+            while index < div:
+                begin = 36 * index
+                end = 36 * (index + 1)
+
+                for i, count in enumerate(counts[begin:end]):
+                    if i != len(counts[begin:end]) - 1:
+                        outputTrainingFile.write(str(count) + ', ')
+                    else:
+                        outputTrainingFile.write(str(count) + '\n')
+                        outputTrainingAnsFile.write(str(1) + '\n')
+                index += 1
 
         file.close()
 
