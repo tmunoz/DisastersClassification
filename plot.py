@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
+# save numpy array as csv file
+from numpy import asarray
+from numpy import savetxt
 
-f = open("./captured/sortedChile1.csv", "r")
+f = open("./captured/sorted", "r")
 
 dates = []
 stamps = []
@@ -33,10 +36,16 @@ if len(stamps) > len(counts):
     counts.append(count)
 
 for j in range (len(stamps)):
-    print(stamps[j], counts[j])
+    # print(stamps[j], counts[j])
+    print(counts[j])
 
 for elem in stamps:
     elem=elem.time
+
+# define data
+data = asarray([counts])
+# save to csv file
+savetxt('data2.csv', data, delimiter=',')
 
 x = [j for j in range(0, len(stamps))]
 plt.ylabel('Tweets')
