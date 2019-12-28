@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from numpy import loadtxt
 # load array
 
-label = ["Sin evento", "Terremoto", "Otro"]
+labels = ["No event", "Earthquake", "Other"]
 data = loadtxt('data.csv', delimiter=',')
 data2 = loadtxt('data2.csv', delimiter=',')
 
@@ -28,7 +28,7 @@ train_y = np.array([0,0]) #labels for the dataset
 
 train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size = 0.1, stratify = train_y)
 # number of neurons in each layer
-input_num_units = 780
+input_num_units = 36
 hidden_num_units = 500
 output_num_units = 2
 
