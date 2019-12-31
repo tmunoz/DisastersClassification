@@ -12,7 +12,7 @@ twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
 
 writer = open("chileSearch.csv", 'w+')
 writerDetails = open("chileSearch-details.csv", 'w+')
-keywords = '#fuerzachile OR #fuerzaarica OR #fuerzaiquique OR #fuerzaantofagasta OR #fuerzanortedechile OR #yoestoyconchile OR #yoestoyconarica OR #yoestoyconiquique OR #terremotoenchile OR #terremotochile OR #terremotoenarica OR #terremotoarica OR #terremotoeniquique OR #terremotoiquique OR #terremotoantofagasta OR chile terremoto OR arica terremoto OR iquique terremoto OR antofagasta terremoto OR #chileterremoto OR #Antofagasta OR #Arica OR #Iquique OR #Tocopilla'
+keywords = '#fuerzachile OR #fuerzaarica OR #fuerzaiquique OR #fuerzaantofagasta OR #fuerzanortedechile OR #yoestoyconchile OR #yoestoyconarica OR #yoestoyconiquique OR #terremotoenchile OR #terremotochile OR #terremotoenarica OR #terremotoarica OR #terremotoeniquique OR #terremotoiquique OR #terremotoantofagasta OR chile terremoto OR arica terremoto OR iquique terremoto OR antofagasta terremoto OR #chileterremoto OR Temblor OR #Arica OR #Iquique OR #Tocopilla'
 
 res = twitter.search(q=keywords, result_type='recent', count=100, lang='es', include_entities='true')
 
@@ -24,7 +24,7 @@ foundTweets = 0
 # while True:
 for i in range(18):
     foundTweets += len(res["statuses"])
-    # print(i, "size:", len(res["statuses"]))
+    print(i, "size:", len(res["statuses"]))
     for tweet in res["statuses"]:
         if int(tweet["id"]) < minID:
             minID = int(tweet["id"])
@@ -39,9 +39,9 @@ for i in range(18):
 
     if foundTweets >= tweetsAmount:
         break
-    print("Sleeping 15 mins")
-    time.sleep(60*15)
-    print("Awakening")
-    twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
+    # print("Sleeping 15 mins")
+    # time.sleep(60*15)
+    # print("Awakening")
+    # twitter = Twython(APP_KEY, access_token=ACCESS_TOKEN)
 writer.close()
 writerDetails.close()

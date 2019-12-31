@@ -16,7 +16,7 @@ X = torch.from_numpy(X).type(torch.FloatTensor)
 y = torch.from_numpy(y).type(torch.LongTensor)
 
 
-#our class must extend nn.Module
+# Feed Forward Neural Network
 class Net(nn.Module):
     def __init__(self):
         super(Net,self).__init__()
@@ -27,7 +27,6 @@ class Net(nn.Module):
         #This applies linear transformation to produce output data
         self.fc2 = nn.Linear(4,2)
         
-    #This must be implemented
     def forward(self,x):
         #Output of the first layer
         x = self.fc1(x)
